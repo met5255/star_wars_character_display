@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Star Wars Karakterek - Tesztfeladat (Next.js + TypeScript)
 
-## Getting Started
+Ez az alkalmazás egy tesztfeladat, **Next.js** és **TypeScript** felhasználásával.
+Az oldal a Star Wars karaktereit jeleníti meg lapozható lista nézetben.
 
-First, run the development server:
+## Technológiák
 
+- [Next.js](https://nextjs.org/)
+- TypeScript
+- Axios – API hívásokhoz
+- Material UI – komponensekhez és designhoz
+- SWAPI – Star Wars API: [https://swapi.dev/api](https://swapi.dev/api)
+- Képek: [https://picsum.photos](https://picsum.photos)
+- Custom font
+
+## API dokumentáció
+
+- A felhasznált API: [SWAPI Dokumentáció](https://swapi.dev/documentation)
+- A típusdefiníciók és interface-k innen származnak:
+  [https://github.com/amitmtrn/swapi-ts/blob/main/src/SWApi.ts](https://github.com/amitmtrn/swapi-ts/blob/main/src/SWApi.ts)
+
+## Fő funkciók
+
+- Karakterek listázása lapozható nézetben
+- Keresés karakter név szerint
+- Szűrés film és szülőbolygó alapján
+- Modal megjelenítés részletes adatokkal
+- Error Boundancing komponens (hiba esetén)
+- Responsive design (mobil/tablet is)
+
+## Indítás
+
+1. Telepítsd a függőségeket:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Indítsd el a fejlesztői szervert:
+```bash
+npm run dev
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. Nyisd meg böngészőben:
+```
+http://localhost:3000
+```
