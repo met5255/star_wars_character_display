@@ -1,4 +1,4 @@
-import { Box, Button, Fade, Modal, Typography, Backdrop, Dialog, DialogTitle, DialogContent, DialogActions, Divider, Paper, Stack } from '@mui/material';
+import { Box, Button, Typography, Dialog, DialogContent, DialogActions, Divider, Paper, Stack } from '@mui/material';
 import { useCharacterContext } from '../../contexts/CharacterContext';
 
 const ModalPanel = () => {
@@ -26,7 +26,7 @@ const ModalPanel = () => {
                 <Typography variant="body1"><strong>Születési dátum:</strong> {selectedCharacter.birth_year}</Typography>
                 <Typography variant="body1"><strong>Filmek száma:</strong> {selectedCharacter.films.length}</Typography>
               </Paper>
-              
+
               {planet && (
                 <Paper elevation={3} sx={{ mt: 2, p: 2, bgcolor: 'grey.100' }}>
                   <Typography variant="subtitle1" fontWeight="bold" gutterBottom>Szülőföld:</Typography>
