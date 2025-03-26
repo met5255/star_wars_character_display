@@ -62,44 +62,55 @@ const CharacterCards = () => {
     if (selectedPlanet) {
       filtered = filtered.filter((char) => char.homeworld === selectedPlanet);
     }
-    if (loading) return <>
-      <Loading />
-      {Array.from({ length: 6 }).map((_, i) => (
-        <Grid size={{ xs: 12, sm: 3, md: 2 }} key={`skeleton-${i}`}>
-          <Skeleton variant="rectangular" height={250} />
-        </Grid>
-      ))}
-    </>
+    if (loading) return (
+      <>
+        <Loading />
+        {Array.from({ length: 6 }).map((_, i) => (
+          <Grid size={{ xs: 12, sm: 3, md: 2 }} key={`skeleton-${i}`}>
+            <Skeleton variant="rectangular" height={250} />
+          </Grid>
+        ))}
+      </>
+    );
+
     if (filtered.length === 0 && searchTerm !== "") return <NotFoundPage />;
+
     if (error) return <NotFoundPage error />
+
     return filtered.map((char) => (
       <CharacterCard key={char.name} character={char} onClick={() => openCharacterModal(char)} />
     ));
   }, [loading, characters, openCharacterModal, searchTerm, selectedFilm, selectedPlanet, error]);
 
   return (
-    <Box textAlign="center" mt={5}>
-      <Grid container justifyContent="center" gap={4} spacing={2}>
-        <Grid size={ 5}>
+    <Box px={2} py={4}>
+      <Grid container spacing={2} justifyContent="center" alignItems="fex-start" mb={3}>
+        <Grid size={{ xs: 12, sm: 4, md: 3 }}>
           <FilmSelect selectedFilm={selectedFilm} setSelectedFilm={setSelectedFilm} />
         </Grid>
-        <Grid size={5}>
+        <Grid size={{ xs: 12, sm: 4, md: 3 }}>
           <PlanetSelect selectedPlanet={selectedPlanet} setSelectedPlanet={setSelectedPlanet} />
         </Grid>
-        <Grid size={10}>
-        <TextField
-          variant="outlined"
-          fullWidth
-          label="Keresés név szerint..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          sx={{ mb: 4 }}
-        />
+        <Grid size={{ xs: 12, sm: 8, md: 4 }}>
+          <TextField
+            variant="outlined"
+            fullWidth
+            label="Keresés név szerint..."
+            value={searchTerm}
+            onChange={(e) => {setSearchTerm(e.target.value); setPage(1)}}
+          />
         </Grid>
+      </Grid>
 
+      <Grid container spacing={3} justifyContent="center" gap={4} >
         {renderCharacters}
-        <Grid size={{ xs: 12 }} sx={{ display: "flex", justifyContent: "center" }}>
-          <Pagination count={pageCount} variant="outlined" shape="rounded" onChange={(_, p) => setPage(p)} />
+        <Grid size={{ xs: 12 }} sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+          <Pagination
+            count={pageCount}
+            variant="outlined"
+            shape="rounded"
+            onChange={(_, p) => setPage(p)}
+          />
         </Grid>
       </Grid>
     </Box>

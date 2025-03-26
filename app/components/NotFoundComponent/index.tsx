@@ -16,14 +16,11 @@ const NotFoundPage = ({ error = false }: Props) => {
                     width={400}
                     height={600}
                     style={{ objectFit: "cover" }}
-                    placeholder="blur"
-                    blurDataURL="/swlogo.png"
-                    loading="lazy"
                 />
             </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 6 }}>
-                <Typography variant="h4" color="error" fontFamily={"Star Jedi"} gutterBottom>
-                    {error ? "Sikertelen Karakter lekérés" :  "404 Nem ezek a karakterek, amiket keresel!"}
+            <Grid size={{ xs: 12, sm: 6, md: 6 }} justifyContent={"center"} alignItems={"center"}>
+                <Typography variant="h4" color="error" fontFamily={"Star Jedi"} gutterBottom textAlign={"center"}>
+                    {error ? "Sikertelen Karakter lekérés!x0" :  <> 404 <br/> Nem ez(ek) a karakter(ek), akiket keresel!</>}
                 </Typography>
             </Grid>
             <Grid size={{ xs: 12, sm: 3, md: 3 }}>
@@ -33,9 +30,6 @@ const NotFoundPage = ({ error = false }: Props) => {
                     width={400}
                     height={600}
                     style={{ objectFit: "cover" }}
-                    placeholder="blur"
-                    blurDataURL="/swlogo.png"
-                    loading="lazy"
                 />
             </Grid>
 
