@@ -1,11 +1,13 @@
 
 import Character from "@/app/interfaces/Character";
-import { Card, CardActionArea, CardContent, CardMedia, Grid2 as Grid, Pagination, TextField, Typography } from "@mui/material";
+import { Box, Card, CardActionArea, CardContent, Grid2 as Grid, Pagination, Skeleton, TextField, Typography } from "@mui/material";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Loading from "../Loading";
 import { useCharacterContext } from '../../contexts/CharacterContext';
-
+import useTypingDelay from "../../utils/TypingDelay";
+import CharacterCard from "./CharacterCard";
+import NotFoundPage from "../NotFoundComponent";
 
 const CharacterCards = () => {
   const [characters, setCharacters] = useState<Character[]>([]);
@@ -13,31 +15,50 @@ const CharacterCards = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [pageCount, setPageCount] = useState<number>(-1);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<boolean>(false);
   const { openCharacterModal } = useCharacterContext();
 
+  const typeDelaySearch = useTypingDelay(searchTerm, 300);
 
-  const fetchCharacters = async (page: number, serachTerm: string) => {
+
+  const fetchCharacters = useCallback(async (page: number, search: string) => {
     setLoading(true);
-    setError(null);
+    setError(false);
     try {
       const res = await axios.get("https://swapi.dev/api/people", {
-        params: { page, search: serachTerm },
+        params: { page, search },
       });
-      if (pageCount === -1) {
-        setPageCount(Math.ceil((res.data as { count: number }).count / 10));
-      }
-      setCharacters((res.data as { results: Character[] }).results);
-    } catch (err) {
-      setError("Hiba a karakterek lekérdezése során");
+
+      const data = res.data as { results: Character[]; count: number };
+      setPageCount(Math.ceil(data.count / 10));
+      setCharacters(data.results);
+    } catch {
+      setError(true);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
 
   useEffect(() => {
-    fetchCharacters(page, searchTerm);
-  }, [page, searchTerm]);
+    fetchCharacters(page, typeDelaySearch);
+  }, [page, typeDelaySearch, fetchCharacters]);
+
+  const renderCharacters = useMemo(() => {
+    if (loading) return <>
+      <Loading />
+      {Array.from({ length: 6 }).map((_, i) => (
+        <Grid size={{ xs: 12, sm: 3, md: 2 }} key={`skeleton-${i}`}>
+          <Skeleton variant="rectangular" height={250} />
+        </Grid>
+      ))}
+    </>
+    if (characters.length === 0 && searchTerm !== "") return <NotFoundPage />;
+    if (error) return <NotFoundPage error />
+    return characters.map((char) => (
+      <CharacterCard key={char.name} character={char} onClick={() => openCharacterModal(char)} />
+    ));
+  }, [loading, characters, openCharacterModal, searchTerm]);
 
   return (
     <>
@@ -50,42 +71,14 @@ const CharacterCards = () => {
         sx={{ mb: 4 }}
       />
 
-      <Grid container gap={4} spacing={2}>
-        {loading && <Loading />}
-        {characters.map((char) => (
-          <Grid
-            size={{ xs: 12, sm: 3, md: 2 }}
-            key={char.name}
-            onClick={() => openCharacterModal(char)}
-          >
-            <Card sx={{ maxWidth: 345 }}>
-              <CardActionArea>
-                <CardMedia
-                  component="img"
-                  height={200}
-                  width={200}
-                  image={`https://picsum.photos/seed/${char.name}/200/200`}
-                  alt={char.name}
-                />
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    {char.name}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{ color: "text.secondary" }}
-                  >
-                    Születési dátum: {char.birth_year}
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
+      <Box textAlign="center" mt={5}>
+        <Grid container justifyContent="center" gap={4} spacing={2}>
+          {renderCharacters}
+          <Grid size={{ xs: 12 }} sx={{ display: "flex", justifyContent: "center" }}>
+            <Pagination count={pageCount} variant="outlined" shape="rounded" onChange={(_, p) => setPage(p)} />
           </Grid>
-        ))}
-        <Grid size={{ xs: 12 }} sx={{ display: "flex", justifyContent: "center" }}>
-          <Pagination count={pageCount} variant="outlined" shape="rounded" onChange={(_, p) => setPage(p)} />
         </Grid>
-      </Grid>
+      </Box>
     </>
   );
 }
