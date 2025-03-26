@@ -27,8 +27,8 @@ const CharacterCard = ({ character, onClick }: Props) => {
             <Typography gutterBottom variant="h5" component="div">
               {character.name}
             </Typography>
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              Születési dátum: {character.birth_year}
+            <Typography variant="body2" sx={{ color: "text.secondary", bgcolor: 'grey.100', borderRadius:2}}>
+              További információ
             </Typography>
           </CardContent>
         </CardActionArea>

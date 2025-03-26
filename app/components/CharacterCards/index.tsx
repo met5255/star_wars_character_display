@@ -8,6 +8,10 @@ import { useCharacterContext } from '../../contexts/CharacterContext';
 import useTypingDelay from "../../utils/TypingDelay";
 import CharacterCard from "./CharacterCard";
 import NotFoundPage from "../NotFoundComponent";
+import FilmSelect from "../FilmSelect";
+import PlanetSelect from "../PlanetSelect";
+
+
 
 const CharacterCards = () => {
   const [characters, setCharacters] = useState<Character[]>([]);
@@ -16,6 +20,10 @@ const CharacterCards = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [pageCount, setPageCount] = useState<number>(-1);
   const [error, setError] = useState<boolean>(false);
+  const [selectedFilm, setSelectedFilm] = useState<string>("");
+  const [selectedPlanet, setSelectedPlanet] = useState<string>("");
+
+
   const { openCharacterModal } = useCharacterContext();
 
   const typeDelaySearch = useTypingDelay(searchTerm, 300);
@@ -45,6 +53,15 @@ const CharacterCards = () => {
   }, [page, typeDelaySearch, fetchCharacters]);
 
   const renderCharacters = useMemo(() => {
+    let filtered = characters;
+
+    if (selectedFilm) {
+      filtered = filtered.filter((char) => char.films.includes(selectedFilm));
+    }
+
+    if (selectedPlanet) {
+      filtered = filtered.filter((char) => char.homeworld === selectedPlanet);
+    }
     if (loading) return <>
       <Loading />
       {Array.from({ length: 6 }).map((_, i) => (
@@ -53,33 +70,40 @@ const CharacterCards = () => {
         </Grid>
       ))}
     </>
-    if (characters.length === 0 && searchTerm !== "") return <NotFoundPage />;
+    if (filtered.length === 0 && searchTerm !== "") return <NotFoundPage />;
     if (error) return <NotFoundPage error />
-    return characters.map((char) => (
+    return filtered.map((char) => (
       <CharacterCard key={char.name} character={char} onClick={() => openCharacterModal(char)} />
     ));
-  }, [loading, characters, openCharacterModal, searchTerm]);
+  }, [loading, characters, openCharacterModal, searchTerm, selectedFilm, selectedPlanet, error]);
 
   return (
-    <>
-      <TextField
-        variant="outlined"
-        fullWidth
-        label="Keresés név szerint..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        sx={{ mb: 4 }}
-      />
-
-      <Box textAlign="center" mt={5}>
-        <Grid container justifyContent="center" gap={4} spacing={2}>
-          {renderCharacters}
-          <Grid size={{ xs: 12 }} sx={{ display: "flex", justifyContent: "center" }}>
-            <Pagination count={pageCount} variant="outlined" shape="rounded" onChange={(_, p) => setPage(p)} />
-          </Grid>
+    <Box textAlign="center" mt={5}>
+      <Grid container justifyContent="center" gap={4} spacing={2}>
+        <Grid size={ 5}>
+          <FilmSelect selectedFilm={selectedFilm} setSelectedFilm={setSelectedFilm} />
         </Grid>
-      </Box>
-    </>
+        <Grid size={5}>
+          <PlanetSelect selectedPlanet={selectedPlanet} setSelectedPlanet={setSelectedPlanet} />
+        </Grid>
+        <Grid size={10}>
+        <TextField
+          variant="outlined"
+          fullWidth
+          label="Keresés név szerint..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          sx={{ mb: 4 }}
+        />
+        </Grid>
+
+        {renderCharacters}
+        <Grid size={{ xs: 12 }} sx={{ display: "flex", justifyContent: "center" }}>
+          <Pagination count={pageCount} variant="outlined" shape="rounded" onChange={(_, p) => setPage(p)} />
+        </Grid>
+      </Grid>
+    </Box>
+
   );
 }
 export default CharacterCards;
